@@ -1,5 +1,5 @@
 # Componente ESP32-YL69
-Este es un componente para ESP32 que permite la lectura de sensores de humedad del suelo YL-69 o MH Series utilizando el framework ESP-IDF.
+Este es un componente para ESP32 que permite la lectura de sensores de humedad del suelo YL-69 o Sensores capacitivos de salida analogica utilizando el framework ESP-IDF.
 
 ## 🎯 ¿Qué podemos hacer con este componente?
 Por ejemplo podemos medir qué tan húmeda está la tierra de una planta usando un sensor y mostrar el resultado en porcentaje (0% = muy seco, 100% = muy húmedo).
@@ -64,19 +64,19 @@ Abre tu proyecto con el IDE que prefieres y reemplaza todo el contenido de `main
 #include "freertos/FreeRTOS.h"
 
 static const char *TAG = "Capacitive-sensor";
-#define CHANNEL2_Yl69 ADC_CHANNEL_6
+#define CHANNEL1 ADC_CHANNEL_6
 void app_main(void)
 {
     int humedad = 0; 
     while (1)
     {
-    yl69_config_t cfg_YL69 = YL69_DEFAULT_CONFIG;
-    cfg_YL69.channel = CHANNEL2_Yl69;
-    yl69_init(&cfg_YL69);
-    yl69_read_percentage(cfg_YL69.channel,&humedad);
-    ESP_LOGI(TAG, "Humedad: %d%%",humedad);
-    vTaskDelay(pdMS_TO_TICKS(5000));
-
+        yl69_config_t cfg = YL69_DEFAULT_CONFIG;
+        cfg.channel = CHANNEL1;
+        cfg.sensor_type = TYPE_CAP;
+        yl69_init(&cfg);
+        yl69_read_percentage(cfg.channel,&humedad,cfg.sensor_type);
+        ESP_LOGI(TAG, "Humedad: %d%%",humedad);
+        vTaskDelay(pdMS_TO_TICKS(5000));
     } 
 }
 

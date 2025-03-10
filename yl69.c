@@ -9,15 +9,17 @@ static adc_oneshot_unit_handle_t adc_handle;
 static bool adc_initialized = false;
 
 
-#define VALUE_WHEN_DRY 3096  // Valor cuando el sensor está seco
-#define VALUE_WHEN_WET 800  // Valor cuando el sensor está en agua
+#define VALUE_WHEN_DRY_CAP 2865  // Valor cuando el sensor Capacitio está seco
+#define VALUE_WHEN_WET_CAP 1220 // Valor cuando el sensor capacitivo está en agua
+#define VALUE_WHEN_DRY_YL 3096  // Valor cuando el sensor YL está seco
+#define VALUE_WHEN_WET_YL 800 // Valor cuando el sensor YL está en agua
 #define HUMIDITY_MAX 100
 #define HUMIDITY_MIN 0
 
-static int map_value(int value) {
-    
-    return (value - VALUE_WHEN_DRY) * (HUMIDITY_MAX - HUMIDITY_MIN) / 
-           (VALUE_WHEN_WET - VALUE_WHEN_DRY) + HUMIDITY_MIN;
+static int map_value(int value, int value_when_dry, int value_when_wet) {
+
+    return (value - value_when_dry) * (HUMIDITY_MAX - HUMIDITY_MIN) / 
+           (value_when_wet - value_when_dry) + HUMIDITY_MIN;
 }
 
 esp_err_t yl69_init(yl69_config_t *config) {
@@ -61,7 +63,17 @@ int yl69_read_raw(adc_channel_t channel) {
     return raw_value;
 }
 
-void yl69_read_percentage(adc_channel_t channel, int *humidity) {
-    *humidity = map_value(yl69_read_raw(channel));
-}
+void yl69_read_percentage(adc_channel_t channel, int *humidity, groud_sensor_type_t sensor_type) {
 
+    int value_when_dry;
+    int value_when_wet;
+    if (sensor_type==TYPE_YL69){
+        value_when_dry = VALUE_WHEN_DRY_YL;
+        value_when_wet = VALUE_WHEN_WET_YL;
+    }
+    else{
+        value_when_dry = VALUE_WHEN_DRY_CAP;
+        value_when_wet = VALUE_WHEN_WET_CAP;
+    }
+    *humidity = map_value(yl69_read_raw(channel),value_when_dry,value_when_wet);
+}
