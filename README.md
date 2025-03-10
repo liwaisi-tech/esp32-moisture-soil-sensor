@@ -18,7 +18,7 @@ Por ejemplo podemos medir qué tan húmeda está la tierra de una planta usando 
 
 ## Diagrama de Conexión
 
-(<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
   <!-- Fondo -->
   <rect width="800" height="500" fill="#f8f9fa"/>
   
