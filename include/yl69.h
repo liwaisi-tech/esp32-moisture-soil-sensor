@@ -11,13 +11,13 @@
 #include "esp_adc/adc_oneshot.h"
 #include "esp_err.h"
 
+
 typedef struct {
     adc_channel_t channel;
     adc_bitwidth_t bitwidth;
     adc_atten_t atten;
-    adc_unit_t unit;
-    QueueHandle_t queue;  
-    uint32_t read_interval_ms;     
+    adc_unit_t unit; 
+    uint32_t read_interval_ms;  
 } yl69_config_t;
 
 #define YL69_DEFAULT_CONFIG { \
@@ -25,15 +25,11 @@ typedef struct {
     .bitwidth = ADC_BITWIDTH_12,     \
     .atten = ADC_ATTEN_DB_12,        \
     .unit = ADC_UNIT_1,              \
-    .read_interval_ms = 1000,        \
-    .queue = NULL                    \
+    .read_interval_ms = 5000,        \
 }
 
-esp_err_t yl69_init(const yl69_config_t *config);
-esp_err_t yl69_deinit(void);
-int yl69_read_raw(void);
-int yl69_read_percentage(void);
-esp_err_t yl69_start_reading(void);
-esp_err_t yl69_stop_reading(void);
+esp_err_t yl69_init(yl69_config_t *config);
+int yl69_read_raw(adc_channel_t channel);
+void yl69_read_percentage(adc_channel_t channel, int *humidity);
 
 #endif // YL69_H
