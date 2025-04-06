@@ -100,9 +100,10 @@ idf.py -p (PUERTO) flash monitor
 
 Reemplaza (PUERTO) con tu puerto COM en Windows (ejemplo: COM3).
 ## 📊 ¿Qué significan los números?
-- 0-20%: ¡Tu planta tiene mucha sed! 🏜️
-- 60-75%: La humedad es buena 👍
-- 80-100%: La tierra está muy húmeda 💧
+- 0-20%: ¡Tu planta se muere! 🏜️🏜️
+- 21-45%: ¡Tu planta tiene mucha sed! 🏜️
+- 50-70%: La humedad es buena 👍
+- 71-100%: La tierra está muy húmeda 💧
 
 ## 🔍 Solución de problemas
 - Si no ves números en la pantalla, revisa las conexiones

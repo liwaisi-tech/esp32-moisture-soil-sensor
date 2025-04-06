@@ -1,10 +1,10 @@
 /*
  * Componente de ESP32 
- * Lectura sensor de humedad del suelo YL-69 o HL-69 Driver
+ * Driver Lectura sensor de humedad del suelo YL-69, HL-69 o sensor capacitivo
  * Copyright 2024, Briggitte Castañeda <btatacc@gmail.com>
  */
-#ifndef YL69_H
-#define YL69_H
+#ifndef MOISTURE_SENSOR_H
+#define MOISTURE_SENSOR_H
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -24,9 +24,9 @@ typedef struct {
     adc_unit_t unit; 
     uint32_t read_interval_ms;  
     groud_sensor_type_t sensor_type;
-} yl69_config_t;
+} moisture_sensor_config_t;
 
-#define YL69_DEFAULT_CONFIG { \
+#define SENSOR_DEFAULT_CONFIG { \
     .channel = ADC_CHANNEL_6,        \
     .bitwidth = ADC_BITWIDTH_12,     \
     .atten = ADC_ATTEN_DB_12,        \
@@ -35,8 +35,8 @@ typedef struct {
      .sensor_type = TYPE_YL69,  \
 }
 
-esp_err_t yl69_init(yl69_config_t *config);
-int yl69_read_raw(adc_channel_t channel);
-void yl69_read_percentage(adc_channel_t channel, int *humidity, groud_sensor_type_t sensor_type);
+esp_err_t moisture_sensor_init(moisture_sensor_config_t *config);
+int sensor_read_raw(adc_channel_t channel);
+void sensor_read_percentage(adc_channel_t channel, int *humidity, groud_sensor_type_t sensor_type);
 
-#endif // YL69_H
+#endif // MOISTURE_SENSOR_H
