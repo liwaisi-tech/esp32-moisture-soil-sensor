@@ -1,10 +1,10 @@
-#include "yl69.h"
+#include "Moisture sensor"
 #include "esp_log.h"
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-static const char *TAG = "YL69";
+static const char *TAG = "Moisture sensor";
 static adc_oneshot_unit_handle_t adc_handle;
 static bool adc_initialized = false;
 
@@ -22,7 +22,7 @@ static int map_value(int value, int value_when_dry, int value_when_wet) {
            (value_when_wet - value_when_dry) + HUMIDITY_MIN;
 }
 
-esp_err_t yl69_init(yl69_config_t *config) {
+esp_err_t moisture_sensor_init(moisture_sensor_config_t *config) {
     if (!adc_initialized) {
         // Inicializar ADC solo una vez
         adc_oneshot_unit_init_cfg_t init_config = {
@@ -43,7 +43,7 @@ esp_err_t yl69_init(yl69_config_t *config) {
     return ESP_OK;
 }
 
-int yl69_read_raw(adc_channel_t channel) {
+int sensor_read_raw(adc_channel_t channel) {
     if (!adc_initialized) {
         ESP_LOGE(TAG, "YL69 no inicializado");
         return -1;
@@ -63,7 +63,7 @@ int yl69_read_raw(adc_channel_t channel) {
     return raw_value;
 }
 
-void yl69_read_percentage(adc_channel_t channel, int *humidity, groud_sensor_type_t sensor_type) {
+void sensor_read_percentage(adc_channel_t channel, int *humidity, groud_sensor_type_t sensor_type) {
 
     int value_when_dry;
     int value_when_wet;
@@ -75,5 +75,5 @@ void yl69_read_percentage(adc_channel_t channel, int *humidity, groud_sensor_typ
         value_when_dry = VALUE_WHEN_DRY_CAP;
         value_when_wet = VALUE_WHEN_WET_CAP;
     }
-    *humidity = map_value(yl69_read_raw(channel),value_when_dry,value_when_wet);
+    *humidity = map_value(sensor_read_raw(channel),value_when_dry,value_when_wet);
 }

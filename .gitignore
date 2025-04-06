@@ -1,0 +1,91 @@
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+sdkconfig
+component.mk
+Mkfile.old
+dkms.conf
+*.vscode
+sdkconfig.old
+*.DS_Store
+# Ignore build results
+build/
+build/log/
+# IAR Debug Obj
+/Obj/*.pbd
+/Obj/*.pbd.*
+/Obj/*.pbi
+/Obj/*.pbi.*
+
+# Log files
+*.ninja_log
+*ninja_deps
+/build.ninja_deps
+*.lock
+
+
+# Compiled Binaries
+*.bin
+*.elf
+*.hex
+*.map
+
+# Created by git when using merge tools for conflicts
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*_BACKUP_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTE_*.txt
+
+# macOS Finder incidental files
+.DS_Store
