@@ -59,27 +59,27 @@ Abre tu proyecto con el IDE que prefieres y reemplaza todo el contenido de `main
 
 ```c
 #include <stdio.h>
-#include "yl69.h"
+#include "moisture_sensor.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 
 static const char *TAG = "Capacitive-sensor";
-#define CHANNEL1 ADC_CHANNEL_6
+#define CHANNEL1 ADC_CHANNEL_5 //Pin GPIO33 (D33). Asegurate que sea el pin que uses en la conexión fisica.
 void app_main(void)
 {
-    int humedad = 0; 
+    int humedad = 0;
+    moisture_sensor_config_t cfg = SENSOR_DEFAULT_CONFIG;
+    cfg.channel = CHANNEL1;
+    cfg.sensor_type = TYPE_CAP;
+    moisture_sensor_init(&cfg); 
+
     while (1)
     {
-        yl69_config_t cfg = YL69_DEFAULT_CONFIG;
-        cfg.channel = CHANNEL1;
-        cfg.sensor_type = TYPE_CAP;
-        yl69_init(&cfg);
-        yl69_read_percentage(cfg.channel,&humedad,cfg.sensor_type);
+        sensor_read_percentage(cfg.channel,&humedad,cfg.sensor_type);
         ESP_LOGI(TAG, "Humedad: %d%%",humedad);
         vTaskDelay(pdMS_TO_TICKS(5000));
     } 
 }
-
 ```
 
 ### 4️⃣ Compilar y cargar
