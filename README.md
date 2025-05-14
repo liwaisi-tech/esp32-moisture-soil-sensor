@@ -1,12 +1,14 @@
 # Componente ESP32-YL69
-Este es un componente para ESP32 que permite la lectura de sensores de humedad del suelo YL-69 o Sensores capacitivos de salida analogica utilizando el framework ESP-IDF.
+Este es un componente para ESP32 que permite la lectura de sensores de humedad del suelo YL-69 o Sensores resistivos de salida analogica utilizando el framework ESP-IDF.
 
 ## 🎯 ¿Qué podemos hacer con este componente?
 Por ejemplo podemos medir qué tan húmeda está la tierra de una planta usando un sensor y mostrar el resultado en porcentaje (0% = muy seco, 100% = muy húmedo).
 
+> Este ejemplo es con un sensor capacitivo YL69.
+
 ## 📝 Lo que necesitas
 - ESP32
-- Sensor YL-69 (o sensor de humedad del suelo)
+- Sensor YL-69 (u otro sensor de humedad del suelo)
 - Cable USB
 - Computadora con ESP-IDF instalado
 
