@@ -1,11 +1,18 @@
 
 # Componente ESP32-Moisture sensor
-Este es un componente para ESP32 que permite la lectura de sensores de humedad del suelo YL-69 o Sensores resisitivos de salida analogica utilizando el framework ESP-IDF.
+Este es un componente para ESP32 que permite la lectura de sensores de humedad del suelo YL-69 o Sensores capacitivos de salida analogica utilizando el framework ESP-IDF.
 
 ## 🎯 ¿Qué podemos hacer con este componente?
 Por ejemplo podemos medir qué tan húmeda está la tierra de una planta usando un sensor y mostrar el resultado en porcentaje (0% = muy seco, 100% = muy húmedo).
 
-> Este ejemplo es con un sensor capacitivo YL69.
+## 🔍 Solución de problemas
+- Si no ves números en la pantalla, revisa las conexiones
+- Si ves números extraños, asegúrate que el sensor esté bien conectado
+- Si el programa no carga en la esp32, verifica que seleccionaste el puerto correcto
+
+¡Diviértete experimentando! 🚀
+
+> Este ejemplo es con un sensor resistivo YL69.
 
 ## 📝 Lo que necesitas
 - ESP32
@@ -51,7 +58,7 @@ cd components
 ```c
 set(EXTRA_COMPONENT_DIRS components)
 ```
-3. Descarga este componente:
+3. Descarga este componente en otra ubicación:
 ```c
 git clone https://github.com/liwaisi-tech/esp32-yl69.git
 ```
@@ -66,14 +73,14 @@ Abre tu proyecto con el IDE que prefieres y reemplaza todo el contenido de `main
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 
-static const char *TAG = "Capacitive-sensor";
-#define CHANNEL1 ADC_CHANNEL_5 //Pin GPIO33 (D33). Asegurate que sea el pin que uses en la conexión fisica.
+static const char *TAG = "Resistive-sensor";
+#define CHANNEL1 ADC_CHANNEL_6 //Pin GPIO34 (D34). Asegurate que sea el pin que uses en la conexión fisica.
 void app_main(void)
 {
     int humedad = 0;
     moisture_sensor_config_t cfg = SENSOR_DEFAULT_CONFIG;
     cfg.channel = CHANNEL1;
-    cfg.sensor_type = TYPE_CAP;
+    cfg.sensor_type = TYPE_YL69; //Si tienes un sensor Capacitivo usa TYPE_CAP
     moisture_sensor_init(&cfg); 
 
     while (1)
@@ -108,9 +115,3 @@ Reemplaza (PUERTO) con tu puerto COM en Windows (ejemplo: COM3).
 - 50-70%: La humedad es buena 👍
 - 71-100%: La tierra está muy húmeda 💧
 
-## 🔍 Solución de problemas
-- Si no ves números en la pantalla, revisa las conexiones
-- Si ves números extraños, asegúrate que el sensor esté bien conectado
-- Si el programa no carga, verifica que seleccionaste el puerto correcto
-
-¡Diviértete experimentando! 🚀
