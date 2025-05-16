@@ -4,15 +4,30 @@
 #include "esp_log.h"
 #include "moisture_sensor.h"
 
-#define CHANNEL ADC_CHANNEL_6 // Pin GPIO34 (D34)  Asegurate que sea el pin que uses en la conexión fisica.
+#define CHANNEL ADC_CHANNEL_6 // Pin GPIO34 (D34)
 static const char *TAG = "Resistive-sensor";
 
 // Importar archivo HTML que se convierte en binario durante la compilación
 extern const char index_start[] asm("_binary_index_html_start");
 extern const char index_end[] asm("_binary_index_html_end");
 
+// Definición de URIs
+const httpd_uri_t sensor = {
+  .uri = "/sensor",
+  .method = HTTP_GET,
+  .handler = data_sensor_get_handler,
+  .user_ctx = NULL
+}; 
+
+const httpd_uri_t home = {
+  .uri = "/home",
+  .method = HTTP_GET,
+  .handler = home_get_handler,
+  .user_ctx = NULL
+};
+
 // Handler para la página principal
-static esp_err_t home_get_handler(httpd_req_t *req) {
+esp_err_t home_get_handler(httpd_req_t *req) {
     const u_int32_t index_len = index_end - index_start;
     httpd_resp_set_type(req, "text/html");
     httpd_resp_send(req, index_start, index_len);
@@ -20,7 +35,7 @@ static esp_err_t home_get_handler(httpd_req_t *req) {
 }
 
 // Handler para obtener datos del sensor
-static esp_err_t data_sensor_get_handler(httpd_req_t *req) {
+esp_err_t data_sensor_get_handler(httpd_req_t *req) {
     httpd_resp_set_hdr(req, "Content-Type", "application/json");
     char res[100];
     int humedad = 0;

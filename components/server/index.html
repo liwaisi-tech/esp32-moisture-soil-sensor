@@ -145,6 +145,15 @@
             font-weight: bold;
             color: #2e7d32;
         }
+        .status-dry {
+            color: #f44336;
+        }
+        .status-optimal {
+            color: #2e7d32;
+        }
+        .status-wet {
+            color: #1565c0;
+        }
     </style>
 </head>
 <body>
@@ -178,7 +187,6 @@
                     <tr>
                         <th>Fecha y Hora</th>
                         <th>Humedad (%)</th>
-                        <th>Temperatura (°C)</th>
                     </tr>
                 </thead>
                 <tbody id="history-table">
@@ -194,6 +202,8 @@
         // Almacenamiento de lecturas
         const readings = [];
         const MAX_HISTORY = 10;
+        let countdownInterval;
+        let secondsLeft = 30;
         
         // Función para actualizar la representación de la maceta
         function updatePot(humidityValue) {
@@ -207,57 +217,82 @@
             waterLevel.style.backgroundColor = `rgba(30, 144, 255, ${opacity})`;
         }
         
-        // Función para obtener datos del sensor (simulado)
-        function fetchSensorData() {
-            // En un caso real, aquí harías una petición a tu ESP32
-            // Simulamos datos para este ejemplo
-            const humidity = Math.floor(Math.random() * 100);
-            
-            // Actualizar timestamp
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            const dateTimeString = now.toLocaleString();
-            
-            // Guardar en historial
-            readings.unshift({
-                timestamp: dateTimeString,
-                humidity: humidity,
-            });
-            
-            // Mantener solo las últimas MAX_HISTORY lecturas
-            if (readings.length > MAX_HISTORY) {
-                readings.pop();
+        // Función para obtener datos del sensor (API real)
+        async function fetchSensorData() {
+            try {
+                const response = await fetch('/sensor');
+                if (!response.ok) {
+                    throw new Error('Error al obtener datos del sensor');
+                }
+                const data = await response.json();
+                
+                // Obtener el valor de humedad del suelo
+                const humidity = data.humedadSuelo;
+                
+                // Actualizar timestamp
+                const now = new Date();
+                const timeString = now.toLocaleTimeString();
+                const dateTimeString = now.toLocaleString();
+                
+                // Guardar en historial
+                readings.unshift({
+                    timestamp: dateTimeString,
+                    humidity: humidity
+                });
+                
+                // Mantener solo las últimas MAX_HISTORY lecturas
+                if (readings.length > MAX_HISTORY) {
+                    readings.pop();
+                }
+                
+                return {
+                    humidity,
+                    timestamp: timeString
+                };
+            } catch (error) {
+                console.error('Error:', error);
+                // Si hay error, devolver datos para mostrar el error
+                return {
+                    humidity: null,
+                    timestamp: new Date().toLocaleTimeString(),
+                    error: true
+                };
             }
-            
-            return {
-                humidity,
-                timestamp: timeString
-            };
         }
         
         // Función para determinar el estado basado en valores
         function getHumidityStatus(humidity) {
-            if (humidity < 20) return "Muy seco";
-            if (humidity < 45) return "Seco";
-            if (humidity < 70) return "Óptimo";
-            if (humidity > 75) return "Húmedo";
-            return "Muy húmedo";
+            if (humidity === null) return "Error de lectura";
+            if (humidity < 20) return "<span class='status-dry'>Muy seco</span>";
+            if (humidity < 45) return "<span class='status-dry'>Seco</span>";
+            if (humidity < 70) return "<span class='status-optimal'>Óptimo</span>";
+            if (humidity > 75) return "<span class='status-wet'>Húmedo</span>";
+            return "<span class='status-wet'>Muy húmedo</span>";
         }
         
-        
         // Función para actualizar la interfaz completa
-        function updateUI() {
-            const data = fetchSensorData();
+        async function updateUI() {
+            // Reiniciar el contador
+            resetCountdown();
+            
+            // Indicar que estamos actualizando
+            document.getElementById('humidity-value').textContent = "...";
+            
+            // Obtener datos reales del sensor
+            const data = await fetchSensorData();
             
             // Actualizar valores principales
-            document.getElementById('humidity-value').textContent = data.humidity + '%';
-            document.getElementById('last-update').textContent = data.timestamp;
-            
-            // Actualizar estados
-            document.getElementById('humidity-status').textContent = getHumidityStatus(data.humidity);
-            
-            // Actualizar representación gráfica
-            updatePot(data.humidity);
+            if (data.error) {
+                document.getElementById('humidity-value').textContent = "Error";
+                document.getElementById('humidity-status').innerHTML = "Error de conexión";
+            } else {
+                document.getElementById('humidity-value').textContent = data.humidity + '%';
+                document.getElementById('humidity-status').innerHTML = getHumidityStatus(data.humidity);
+                document.getElementById('last-update').textContent = data.timestamp;
+                
+                // Actualizar representación gráfica
+                updatePot(data.humidity);
+            }
             
             // Actualizar historial
             updateHistory();
@@ -284,6 +319,24 @@
             });
         }
         
+        // Función para actualizar el contador de cuenta regresiva
+        function updateCountdown() {
+            secondsLeft--;
+            document.getElementById('countdown').textContent = secondsLeft;
+            
+            if (secondsLeft <= 0) {
+                updateUI();
+            }
+        }
+        
+        // Función para reiniciar el contador
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            secondsLeft = 30;
+            document.getElementById('countdown').textContent = secondsLeft;
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+        
         // Inicializar y configurar actualizaciones
         document.addEventListener('DOMContentLoaded', function() {
             // Cargar datos iniciales
@@ -292,8 +345,8 @@
             // Configurar botón de actualizar
             document.getElementById('refresh-btn').addEventListener('click', updateUI);
             
-            // Actualización automática cada 30 segundos
-            setInterval(updateUI, 30000);
+            // Iniciar el contador
+            countdownInterval = setInterval(updateCountdown, 1000);
         });
     </script>
 </body>

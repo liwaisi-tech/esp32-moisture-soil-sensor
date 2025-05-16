@@ -1,2 +1,5 @@
-idf_component_register(SRCS "server.c"
-                    INCLUDE_DIRS "include")
+   idf_component_register(SRCS "server.c"
+                          INCLUDE_DIRS "include"
+                          REQUIRES esp_http_server 
+                          REQUIRES moisture_sensor
+                          EMBED_FILES index.html)
