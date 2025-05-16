@@ -73,15 +73,6 @@
             bottom: 0;
             overflow: hidden;
         }
-        .pot-rim {
-            width: 160px;
-            height: 20px;
-            background-color: #bb805c;
-            border-radius: 10px 10px 0 0;
-            position: absolute;
-            top: 0;
-            left: -10px;
-        }
         .soil {
             width: 100%;
             background-color: #8B4513;
@@ -171,7 +162,6 @@
         <div class="soil-container">
             <h2>Nivel de Humedad</h2>
             <div class="pot">
-                <div class="pot-rim"></div>
                 <div class="pot-outline">
                     <div class="soil"></div>
                     <div id="water-level" class="water"></div>
@@ -266,7 +256,7 @@
             if (humidity < 20) return "<span class='status-dry'>Muy seco</span>";
             if (humidity < 45) return "<span class='status-dry'>Seco</span>";
             if (humidity < 70) return "<span class='status-optimal'>Óptimo</span>";
-            if (humidity > 75) return "<span class='status-wet'>Húmedo</span>";
+            if (humidity < 75) return "<span class='status-wet'>Húmedo</span>";
             return "<span class='status-wet'>Muy húmedo</span>";
         }
         

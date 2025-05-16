@@ -59,7 +59,7 @@ int sensor_read_raw(adc_channel_t channel) {
         ESP_LOGE(TAG, "Error al leer el ADC: %d", ret);
         return -1; // O manejar el error de otra manera
     }
-
+    ESP_LOGI(TAG, "RAW VALUE: %d", raw_value);
     return raw_value;
 }
 

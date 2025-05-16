@@ -43,7 +43,7 @@ esp_err_t data_sensor_get_handler(httpd_req_t *req) {
     // Configurar y leer el sensor
     moisture_sensor_config_t cfg = SENSOR_DEFAULT_CONFIG;
     cfg.channel = CHANNEL;
-    cfg.sensor_type = TYPE_YL69; // Si tienes un sensor Capacitivo usa TYPE_CAP
+    cfg.sensor_type = CONFIG_SOIL_SENSOR_TYPE; // Si tienes un sensor Capacitivo usa TYPE_CAP
     moisture_sensor_init(&cfg); 
     sensor_read_percentage(cfg.channel, &humedad, cfg.sensor_type);
     ESP_LOGI(TAG, "Humedad: %d%%", humedad);
