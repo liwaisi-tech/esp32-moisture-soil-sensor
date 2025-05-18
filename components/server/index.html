@@ -61,8 +61,8 @@
         .pot {
             position: relative;
             width: 140px;
-            height: 160px;
-            margin: 20px auto;
+            height: 140px;
+            margin: 10px auto;
         }
         .pot-outline {
             width: 140px;
@@ -149,27 +149,26 @@
 </head>
 <body>
     <div class="container">
-        <h1>Monitor de Huerto</h1>
+        <h1>Monitor Humedad Suelo</h1>
         
         <div class="dashboard">
             <div class="card">
                 <h2>Humedad del Suelo</h2>
                 <div id="humidity-value" class="value">---%</div>
-                <div>Estado: <span id="humidity-status">--</span></div>
             </div>
         </div>
-        
+
         <div class="soil-container">
-            <h2>Nivel de Humedad</h2>
             <div class="pot">
                 <div class="pot-outline">
                     <div class="soil"></div>
                     <div id="water-level" class="water"></div>
                 </div>
             </div>
+            <div>Estado: <span id="humidity-status">--</span></div>
             <div class="timestamp">Última actualización: <span id="last-update">--:--:--</span> (Próxima en <span id="countdown">30</span>s)</div>
         </div>
-        
+
         <div class="stats">
             <h2>Historial de Lecturas</h2>
             <table>
