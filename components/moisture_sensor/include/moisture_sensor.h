@@ -32,7 +32,7 @@ typedef struct {
     .atten = ADC_ATTEN_DB_12,        \
     .unit = ADC_UNIT_1,              \
     .read_interval_ms = 5000,        \
-     .sensor_type = TYPE_YL69,  \
+    .sensor_type = TYPE_YL69,  \
 }
 
 esp_err_t moisture_sensor_init(moisture_sensor_config_t *config);

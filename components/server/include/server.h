@@ -8,10 +8,12 @@
 // Declaración de URI handlers (sin static)
 esp_err_t home_get_handler(httpd_req_t *req);
 esp_err_t data_sensor_get_handler(httpd_req_t *req);
+esp_err_t get_calibration_handler(httpd_req_t *req);
 
 // Declaración de URIs
 extern const httpd_uri_t sensor;
 extern const httpd_uri_t home;
+extern const httpd_uri_t sensor_raw;
 
 // Inicialización del servidor web
 void web_server_init();

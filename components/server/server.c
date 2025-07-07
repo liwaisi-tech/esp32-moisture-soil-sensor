@@ -4,7 +4,7 @@
 #include "esp_log.h"
 #include "moisture_sensor.h"
 
-#define CHANNEL ADC_CHANNEL_6 // Pin GPIO34 (D34)
+#define CHANNEL ADC_CHANNEL_6 // Pin GPIO6 s3
 static const char *TAG = "Resistive-sensor";
 
 // Importar archivo HTML que se convierte en binario durante la compilación
@@ -23,6 +23,14 @@ const httpd_uri_t home = {
   .uri = "/home",
   .method = HTTP_GET,
   .handler = home_get_handler,
+  .user_ctx = NULL
+};
+
+// Definición de URI para calibración (valor crudo) ---
+const httpd_uri_t sensor_raw = {
+  .uri = "/sensor/raw",
+  .method = HTTP_GET,
+  .handler = get_calibration_handler,
   .user_ctx = NULL
 };
 
@@ -54,6 +62,26 @@ esp_err_t data_sensor_get_handler(httpd_req_t *req) {
     return ESP_OK;
 }
 
+// --- NUEVO: Handler para obtener valor crudo del sensor ---
+esp_err_t get_calibration_handler(httpd_req_t *req) {
+    httpd_resp_set_hdr(req, "Content-Type", "application/json");
+    char res[100];
+    int valor_crudo = 0;
+
+    // Configurar y leer el sensor
+    moisture_sensor_config_t cfg = SENSOR_DEFAULT_CONFIG;
+    cfg.channel = CHANNEL;
+    cfg.sensor_type = CONFIG_SOIL_SENSOR_TYPE;
+    moisture_sensor_init(&cfg);
+    valor_crudo = sensor_read_raw(cfg.channel);
+    ESP_LOGI(TAG, "Valor crudo: %d", valor_crudo);
+
+    // Enviar respuesta JSON con el valor crudo
+    sprintf(res, "{\"valorCrudo\":%d}", valor_crudo);
+    httpd_resp_send(req, res, HTTPD_RESP_USE_STRLEN);
+    return ESP_OK;
+}
+
 // Inicialización del servidor web
 void web_server_init() {
     httpd_handle_t server = NULL;
@@ -62,6 +90,7 @@ void web_server_init() {
     if (httpd_start(&server, &config) == ESP_OK) {
         httpd_register_uri_handler(server, &sensor);
         httpd_register_uri_handler(server, &home);
+        httpd_register_uri_handler(server, &sensor_raw); // Registrar nueva ruta
         ESP_LOGI(TAG, "Servidor HTTP iniciado correctamente");
         return;
     }
